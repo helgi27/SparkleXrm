@@ -54,7 +54,7 @@ namespace SparkleXrm.GridEditor
                 _pageLoaded++;
                 this.paging.PageNum = _pageLoaded;
                 Refresh();
-                Script.Literal("console.log({0})", String.Format("{0} {1}",index, _pageLoaded));
+                //Script.Literal("console.log({0})", String.Format("{0} {1}",index, _pageLoaded));
             };
             
             //return _data[index + ((int)paging.PageNum * (int)paging.PageSize)];
