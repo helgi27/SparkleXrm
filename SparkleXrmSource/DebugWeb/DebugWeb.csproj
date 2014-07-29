@@ -51,7 +51,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Xrm.Sdk">
-      <HintPath>C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\Extensions\Microsoft\Dynamics CRM 2011 Developer Tools\1.0\Microsoft.Xrm.Sdk.dll</HintPath>
+      <HintPath>..\..\..\..\xRMSoftware\TFS\Össur\Össur EMEA\xRM.Ossur.GeocodeWorkflowAssembly\xRM.Ossur.GeocodeWorkflowAssembly\References\Microsoft.Xrm.Sdk.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Runtime.Serialization" />
@@ -491,27 +491,23 @@ exit
 :deploy
 ECHO Sparkle Build  %25EXTENSION%25
 rem Copy Example files to DebugWeb
-xcopy "$(SolutionDir)Client\bin\%25BINFOLDER%25\Client%25EXTENSION%25.js" "$(SolutionDir)%25CLIENT_SCRIPTS%25Client.js" /y /i /o /s
-xcopy "$(SolutionDir)ClientHooks\bin\%25BINFOLDER%25\ClientHooks%25EXTENSION%25.js" "$(SolutionDir)%25CLIENT_SCRIPTS%25ClientHooks.js" /y /i /o /s
+xcopy "$(SolutionDir)Client\bin\%25BINFOLDER%25\Client%25EXTENSION%25.js" "$(SolutionDir)%25CLIENT_SCRIPTS%25Client.js" /y /s
+
+xcopy "$(SolutionDir)ClientHooks\bin\%25BINFOLDER%25\ClientHooks%25EXTENSION%25.js" "$(SolutionDir)%25CLIENT_SCRIPTS%25ClientHooks.js" /y /s
 
 rem Copy SparkeXrm files to DebugWeb
-xcopy "$(SolutionDir)SparkleXrm\bin\%25BINFOLDER%25\SparkleXrm%25EXTENSION%25.js" "$(SolutionDir)%25SPARKLE_SCRIPTS%25SparkleXrm.js" /y /i /o /s
-xcopy "$(SolutionDir)SparkleXrmUI\bin\%25BINFOLDER%25\SparkleXrmUI%25EXTENSION%25.js" "$(SolutionDir)%25SPARKLE_SCRIPTS%25SparkleXrmUI.js" /y /i /o
-
+xcopy "$(SolutionDir)SparkleXrm\bin\%25BINFOLDER%25\SparkleXrm%25EXTENSION%25.js" "$(SolutionDir)%25SPARKLE_SCRIPTS%25SparkleXrm.js" /y /s
+xcopy "$(SolutionDir)SparkleXrmUI\bin\%25BINFOLDER%25\SparkleXrmUI%25EXTENSION%25.js" "$(SolutionDir)%25SPARKLE_SCRIPTS%25SparkleXrmUI.js" /y
 
 rem Copy the files to the solution package
 xcopy "$(ProjectDir)WebResources" "$(SolutionDir)CrmPackage\WebResources" /s /u /i /y
 
 rem Create References Folder for use in Script# Projects
-xcopy "$(SolutionDir)SparkleXrmUI\bin\%25BINFOLDER%25\Slick.dll" "$(SolutionDir)%25SPARKLE_SCRIPTS%25..\References\Slick.dll" /y /i /o /s
-xcopy "$(SolutionDir)SparkleXrm\bin\%25BINFOLDER%25\SparkleXrm.dll" "$(SolutionDir)%25SPARKLE_SCRIPTS%25..\References\SparkleXrm.dll" /y /i /o /s
-xcopy "$(SolutionDir)SparkleXrmUI\bin\%25BINFOLDER%25\SparkleXrmUI.dll" "$(SolutionDir)%25SPARKLE_SCRIPTS%25..\References\SparkleXrmUI.dll" /y /i /o /s
+xcopy "$(SolutionDir)SparkleXrmUI\bin\%25BINFOLDER%25\Slick.dll" "$(SolutionDir)%25SPARKLE_SCRIPTS%25..\References\Slick.dll" /y /s
+xcopy "$(SolutionDir)SparkleXrm\bin\%25BINFOLDER%25\SparkleXrm.dll" "$(SolutionDir)%25SPARKLE_SCRIPTS%25..\References\SparkleXrm.dll" /y /s
+xcopy "$(SolutionDir)SparkleXrmUI\bin\%25BINFOLDER%25\SparkleXrmUI.dll" "$(SolutionDir)%25SPARKLE_SCRIPTS%25..\References\SparkleXrmUI.dll" /y  /s
 
 exit
-
-
-
-
 
 
 </PostBuildEvent>

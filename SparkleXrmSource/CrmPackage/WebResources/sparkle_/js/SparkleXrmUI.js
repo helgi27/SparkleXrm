@@ -1405,6 +1405,7 @@ SparkleXrm.GridEditor.EntityDataViewModel.prototype = {
             this.__onBeginClearPageCache$1();
         }
         this._data = [];
+        this.paging.extraInfo = null;
     },
     
     get_data: function SparkleXrm_GridEditor_EntityDataViewModel$get_data() {
@@ -2262,7 +2263,7 @@ SparkleXrm.GridEditor.DataViewBase.prototype = {
         }
         this.paging.totalPages = this.getTotalPages();
         this.paging.fromRecord = (this.paging.pageNum * this.paging.pageSize) + 1;
-        this.paging.toRecord = this.paging.totalRows;
+        this.paging.toRecord = Math.min(this.paging.totalRows, this.paging.fromRecord + this.paging.pageSize - 1);
     },
     
     setPagingOptions: function SparkleXrm_GridEditor_DataViewBase$setPagingOptions(p) {

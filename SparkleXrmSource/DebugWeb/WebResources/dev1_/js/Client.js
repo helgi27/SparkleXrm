@@ -2786,6 +2786,7 @@ Type.registerNamespace('Client.TimeSheet.ViewModel');
 
 Client.TimeSheet.ViewModel.DayEntry = function Client_TimeSheet_ViewModel_DayEntry() {
     this.hours = new Array(6);
+    Client.TimeSheet.ViewModel.DayEntry.initializeBase(this, [ 'dayentry' ]);
 }
 Client.TimeSheet.ViewModel.DayEntry.prototype = {
     date: null,
@@ -2850,6 +2851,7 @@ Client.TimeSheet.ViewModel.DaysViewModel.prototype = {
     _newRow$1: null,
     _totals$1: null,
     _days$1: null,
+    _sortCol$1: null,
     _selectedDay: null,
     
     setCurrentWeek: function Client_TimeSheet_ViewModel_DaysViewModel$setCurrentWeek(date) {
@@ -2970,6 +2972,7 @@ Client.TimeSheet.ViewModel.DaysViewModel.prototype = {
             this._rows$1.add(day.value);
         }
         this._totals$1.flatternDays();
+        this._sortData$1();
         this.refresh();
     },
     
@@ -3031,6 +3034,30 @@ Client.TimeSheet.ViewModel.DaysViewModel.prototype = {
             session.account = account;
             session.activitypointer_regardingobjectid = activity.getAttributeValueEntityReference('regardingobjectid');
         }
+    },
+    
+    sort: function Client_TimeSheet_ViewModel_DaysViewModel$sort(sorting) {
+        this._sortCol$1 = sorting;
+        this._sortData$1();
+        this.refresh();
+    },
+    
+    _sortData$1: function Client_TimeSheet_ViewModel_DaysViewModel$_sortData$1() {
+        if (this._sortCol$1 == null) {
+            return;
+        }
+        var totalRow = this._rows$1[0];
+        this._rows$1.removeAt(0);
+        if (!this._sortCol$1.sortAsc) {
+            this._rows$1.reverse();
+        }
+        this._rows$1.sort(ss.Delegate.create(this, function(a, b) {
+            return Xrm.Sdk.Entity.sortDelegate(this._sortCol$1.sortCol.field, a, b);
+        }));
+        if (!this._sortCol$1.sortAsc) {
+            this._rows$1.reverse();
+        }
+        this._rows$1.insert(0, totalRow);
     }
 }
 
@@ -3590,6 +3617,7 @@ Client.TimeSheet.View.TimeSheetView.init = function Client_TimeSheet_View_TimeSh
         var vm = new Client.TimeSheet.ViewModel.TimeSheetViewModel();
         Client.TimeSheet.View.TimeSheetView.setUpGrids(vm);
         Client.TimeSheet.View.TimeSheetView._setUpDatePicker$1(vm);
+        $('#timesheetGridContainer').resizable();
         SparkleXrm.ViewBase.registerViewModel(vm);
     });
 }
@@ -3780,7 +3808,7 @@ Client.TimeSheet.Model.Queries.registerClass('Client.TimeSheet.Model.Queries');
 TimeSheet.Client.ViewModel.ObservableActivityPointer.registerClass('TimeSheet.Client.ViewModel.ObservableActivityPointer');
 TimeSheet.Client.ViewModel.SessionVM.registerClass('TimeSheet.Client.ViewModel.SessionVM');
 TimeSheet.Client.ViewModel.StartStopSessionViewModel.registerClass('TimeSheet.Client.ViewModel.StartStopSessionViewModel', SparkleXrm.ViewModelBase);
-Client.TimeSheet.ViewModel.DayEntry.registerClass('Client.TimeSheet.ViewModel.DayEntry');
+Client.TimeSheet.ViewModel.DayEntry.registerClass('Client.TimeSheet.ViewModel.DayEntry', Xrm.Sdk.Entity);
 Client.TimeSheet.ViewModel.DaysViewModel.registerClass('Client.TimeSheet.ViewModel.DaysViewModel', SparkleXrm.GridEditor.DataViewBase);
 Client.TimeSheet.ViewModel.SessionsViewModel.registerClass('Client.TimeSheet.ViewModel.SessionsViewModel', SparkleXrm.GridEditor.DataViewBase);
 Client.TimeSheet.ViewModel.TimeSheetViewModel.registerClass('Client.TimeSheet.ViewModel.TimeSheetViewModel', SparkleXrm.ViewModelBase);

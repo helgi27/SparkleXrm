@@ -1896,7 +1896,7 @@ Xrm.Sdk.OrganizationServiceProxy._getSoapEnvelope = function Xrm_Sdk_Organizatio
     return xml;
 }
 Xrm.Sdk.OrganizationServiceProxy._getServerUrl = function Xrm_Sdk_OrganizationServiceProxy$_getServerUrl() {
-    if (typeof(Xrm.Page.context.getServerUrl) === 'undefined') {
+    if (typeof(Xrm.Page.context.getClientUrl) === 'undefined') {
         var context = Xrm.Page.context;
         var crmServerUrl;
         if (context.isOutlookClient() && !context.isOutlookOnline()) {
@@ -1910,7 +1910,7 @@ Xrm.Sdk.OrganizationServiceProxy._getServerUrl = function Xrm_Sdk_OrganizationSe
         return crmServerUrl;
     }
     else {
-        return Xrm.Page.context.getServerUrl();
+        return Xrm.Page.context.getClientUrl();
     }
 }
 Xrm.Sdk.OrganizationServiceProxy._getResponse = function Xrm_Sdk_OrganizationServiceProxy$_getResponse(soapXmlPacket, action, asyncCallback) {
@@ -3054,6 +3054,20 @@ Type.registerNamespace('Xrm.Sdk.Ribbon');
 // Xrm.Sdk.Ribbon.RibbonButton
 
 Xrm.Sdk.Ribbon.RibbonButton = function Xrm_Sdk_Ribbon_RibbonButton(Id, Sequence, LabelText, Command, Image16, Image32) {
+    Xrm.Sdk.Ribbon.RibbonButton.initializeBase(this, [ Id, Sequence, LabelText, Command, Image16, Image32 ]);
+}
+Xrm.Sdk.Ribbon.RibbonButton.prototype = {
+    
+    serialiseToRibbonXml: function Xrm_Sdk_Ribbon_RibbonButton$serialiseToRibbonXml(sb) {
+        sb.appendLine('<Button Id="' + Xrm.Sdk.XmlHelper.encode(this.Id) + '" LabelText="' + Xrm.Sdk.XmlHelper.encode(this.LabelText) + '" Sequence="' + this.Sequence.toString() + '" Command="' + Xrm.Sdk.XmlHelper.encode(this.Command) + '"' + ((this.Image32by32 != null) ? (' Image32by32="' + Xrm.Sdk.XmlHelper.encode(this.Image32by32) + '"') : '') + ((this.Image16by16 != null) ? (' Image16by16="' + Xrm.Sdk.XmlHelper.encode(this.Image16by16) + '"') : '') + ' />');
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Xrm.Sdk.Ribbon.RibbonControl
+
+Xrm.Sdk.Ribbon.RibbonControl = function Xrm_Sdk_Ribbon_RibbonControl(Id, Sequence, LabelText, Command, Image16, Image32) {
     this.Id = Id;
     this.Sequence = Sequence;
     this.LabelText = LabelText;
@@ -3061,7 +3075,7 @@ Xrm.Sdk.Ribbon.RibbonButton = function Xrm_Sdk_Ribbon_RibbonButton(Id, Sequence,
     this.Image16by16 = Image16;
     this.Image32by32 = Image32;
 }
-Xrm.Sdk.Ribbon.RibbonButton.prototype = {
+Xrm.Sdk.Ribbon.RibbonControl.prototype = {
     Id: null,
     LabelText: null,
     Sequence: 0,
@@ -3069,8 +3083,24 @@ Xrm.Sdk.Ribbon.RibbonButton.prototype = {
     Image16by16: null,
     Image32by32: null,
     
-    serialiseToRibbonXml: function Xrm_Sdk_Ribbon_RibbonButton$serialiseToRibbonXml(sb) {
-        sb.appendLine('<Button Id="' + Xrm.Sdk.XmlHelper.encode(this.Id) + '" LabelText="' + Xrm.Sdk.XmlHelper.encode(this.LabelText) + '" Sequence="' + this.Sequence.toString() + '" Command="' + Xrm.Sdk.XmlHelper.encode(this.Command) + '"' + ((this.Image32by32 != null) ? (' Image32by32="' + Xrm.Sdk.XmlHelper.encode(this.Image32by32) + '"') : '') + ((this.Image16by16 != null) ? (' Image16by16="' + Xrm.Sdk.XmlHelper.encode(this.Image16by16) + '"') : '') + ' />');
+    serialiseToRibbonXml: function Xrm_Sdk_Ribbon_RibbonControl$serialiseToRibbonXml(sb) {
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Xrm.Sdk.Ribbon.RibbonFlyoutAnchor
+
+Xrm.Sdk.Ribbon.RibbonFlyoutAnchor = function Xrm_Sdk_Ribbon_RibbonFlyoutAnchor(Id, Sequence, LabelText, Command, Image16, Image32) {
+    Xrm.Sdk.Ribbon.RibbonFlyoutAnchor.initializeBase(this, [ Id, Sequence, LabelText, Command, Image16, Image32 ]);
+}
+Xrm.Sdk.Ribbon.RibbonFlyoutAnchor.prototype = {
+    menu: null,
+    
+    serialiseToRibbonXml: function Xrm_Sdk_Ribbon_RibbonFlyoutAnchor$serialiseToRibbonXml(sb) {
+        sb.appendLine('<FlyoutAnchor Id="' + Xrm.Sdk.XmlHelper.encode(this.Id) + '" LabelText="' + Xrm.Sdk.XmlHelper.encode(this.LabelText) + '" Sequence="' + this.Sequence.toString() + '" Command="' + Xrm.Sdk.XmlHelper.encode(this.Command) + '"' + ((this.Image32by32 != null) ? (' Image32by32="' + Xrm.Sdk.XmlHelper.encode(this.Image32by32) + '"') : '') + ((this.Image16by16 != null) ? (' Image16by16="' + Xrm.Sdk.XmlHelper.encode(this.Image16by16) + '"') : '') + ' PopulateDynamically="false">');
+        sb.appendLine(this.menu.serialiseToRibbonXml());
+        sb.appendLine('</FlyoutAnchor>');
     }
 }
 
@@ -3233,7 +3263,9 @@ Xrm.Sdk.Metadata.MetadataSerialiser.registerClass('Xrm.Sdk.Metadata.MetadataSeri
 Xrm.Sdk.Metadata.MetadataCache.registerClass('Xrm.Sdk.Metadata.MetadataCache');
 Xrm.Sdk.Metadata.Query.MetadataSerialiser.registerClass('Xrm.Sdk.Metadata.Query.MetadataSerialiser');
 Xrm.Sdk.Metadata.Query.MetadataQueryBuilder.registerClass('Xrm.Sdk.Metadata.Query.MetadataQueryBuilder');
-Xrm.Sdk.Ribbon.RibbonButton.registerClass('Xrm.Sdk.Ribbon.RibbonButton');
+Xrm.Sdk.Ribbon.RibbonControl.registerClass('Xrm.Sdk.Ribbon.RibbonControl');
+Xrm.Sdk.Ribbon.RibbonButton.registerClass('Xrm.Sdk.Ribbon.RibbonButton', Xrm.Sdk.Ribbon.RibbonControl);
+Xrm.Sdk.Ribbon.RibbonFlyoutAnchor.registerClass('Xrm.Sdk.Ribbon.RibbonFlyoutAnchor', Xrm.Sdk.Ribbon.RibbonControl);
 Xrm.Sdk.Ribbon.RibbonMenu.registerClass('Xrm.Sdk.Ribbon.RibbonMenu');
 Xrm.Sdk.Ribbon.RibbonMenuSection.registerClass('Xrm.Sdk.Ribbon.RibbonMenuSection');
 Xrm.Services.CachedOrganizationService.registerClass('Xrm.Services.CachedOrganizationService');
